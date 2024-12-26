@@ -1,9 +1,10 @@
 import { useParams } from 'react-router'
-import { ButtonHTMLAttributes, ReactEventHandler, useRef, useState } from 'react'
+import { ReactEventHandler, useRef, useState } from 'react'
 import { SvgIcon } from '../../components/SvgIcon'
 import { findClosest, secondsToTimeString, useDbFetchSong, useRerender } from './utils'
 import classes from './styles.module.css'
 import { Bookmark } from './Bookmark.tsx'
+import { ControlsButton } from './ControlsButton.tsx'
 
 export const SongShowView = () => {
   const {id} = useParams<{ id: string }>()
@@ -172,13 +173,3 @@ export const SongShowView = () => {
 }
 
 
-const ControlsButton = ({children, ...rest}: ButtonHTMLAttributes<HTMLButtonElement>) => {
-  return (
-    <button
-      className={classes.controlsButton}
-      {...rest}
-    >
-      {children}
-    </button>
-  )
-}

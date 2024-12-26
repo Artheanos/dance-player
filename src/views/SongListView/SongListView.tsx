@@ -27,8 +27,7 @@ export const SongListView = () => {
   const onFileChange = (event: ChangeEvent<HTMLInputElement>) => {
     const file = event.target.files?.[0]
     if (!file || !file.type.startsWith('audio/')) {
-      alert('Wrong file type')
-      return
+      return alert('Wrong file type')
     }
 
     if (!fileName) setFileName(file.name.split('.').slice(0, -1).join('.'))

@@ -1,5 +1,6 @@
 import { audioStoreKey, db, DbSong } from '../../db'
 import { useEffect, useState } from 'react'
+import { fatalError } from '../../utils.ts'
 
 export const dbStore = ({name, file, onSuccess}: {
   name: string,
@@ -7,8 +8,7 @@ export const dbStore = ({name, file, onSuccess}: {
   onSuccess: (id: IDBValidKey) => unknown
 }) => {
   if (!db) {
-    console.error('Database is not initialized')
-    return
+    return fatalError('Database is not initialized')
   }
 
   const transaction = db.transaction(audioStoreKey, 'readwrite')
@@ -21,15 +21,13 @@ export const dbStore = ({name, file, onSuccess}: {
   }
 
   request.onerror = () => {
-    alert('Error storing file.')
+    fatalError('Error storing file.')
   }
-
 }
 
 export const dbDelete = (id: IDBValidKey, {onSuccess}: { onSuccess?: () => void }) => {
   if (!db) {
-    console.error('Database is not initialized')
-    return
+    return fatalError('Database is not initialized')
   }
 
   const transaction = db.transaction(audioStoreKey, 'readwrite')
@@ -42,7 +40,7 @@ export const dbDelete = (id: IDBValidKey, {onSuccess}: { onSuccess?: () => void 
   }
 
   request.onerror = () => {
-    console.error(`Failed to delete entry with ID ${id}`)
+    fatalError(`Failed to delete entry with ID ${id}`)
   }
 }
 
@@ -61,12 +59,11 @@ export const useDbList = (listName: string) => {
 
   useEffect(() => {
     if (!db) {
-      console.error('Database is not initialized')
-      return
+      return fatalError('Database is not initialized')
     }
 
     fetch()
-  // eslint-disable-next-line react-hooks/exhaustive-deps
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [db, listName])
 
   return {data: result, refetch: fetch}

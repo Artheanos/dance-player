@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react'
+import { fatalError } from './utils.ts'
 
 export let db: IDBDatabase
 
@@ -25,7 +26,7 @@ export const useInitDb = (): boolean => {
     }
 
     request.onerror = () => {
-      alert('Error initializing IndexedDB')
+      fatalError('Error initializing IndexedDB')
     }
   }, [])
 
