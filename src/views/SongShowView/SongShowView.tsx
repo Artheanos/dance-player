@@ -1,9 +1,9 @@
 import { useParams } from 'react-router'
-import { ReactEventHandler, RefObject, useEffect, useRef, useState } from 'react'
-import { audioStoreKey, db, DbSong } from '../../db'
+import { ButtonHTMLAttributes, ReactEventHandler, useRef, useState } from 'react'
 import { SvgIcon } from '../../components/SvgIcon'
-import { findClosest } from './utils'
+import { findClosest, secondsToTimeString, useDbFetchSong, useRerender } from './utils'
 import classes from './styles.module.css'
+import { Bookmark } from './Bookmark.tsx'
 
 export const SongShowView = () => {
   const {id} = useParams<{ id: string }>()
@@ -79,6 +79,7 @@ export const SongShowView = () => {
                 {
                   savedBookmarks.map((bookmark, index) => (
                     <Bookmark
+                      active={bookmark === closestLeftSavedBookmark}
                       inputRef={inputRef}
                       key={index}
                       timestamp={bookmark}
@@ -95,16 +96,14 @@ export const SongShowView = () => {
             </div>
             <div className={classes.controlsContainer}>
               <div className={classes.controlsRow}>
-                <button
-                  className={classes.controlsButton}
+                <ControlsButton
                   onClick={() => {
-                  audioPlayer.currentTime -= 5
-                }}
+                    audioPlayer.currentTime -= 5
+                  }}
                 >
                   -5
-                </button>
-                <button
-                  className={classes.controlsButton}
+                </ControlsButton>
+                <ControlsButton
                   onClick={() => {
                     if (audioPlayer.paused) {
                       audioPlayer.play()
@@ -115,26 +114,24 @@ export const SongShowView = () => {
                   }}
                 >
                   <SvgIcon name={audioPlayer.paused ? 'play' : 'pause'} size={20}/>
-                </button>
-                <button
-                  className={classes.controlsButton}
+                </ControlsButton>
+                <ControlsButton
                   onClick={() => {
-                  audioPlayer.currentTime += 5
-                }}
-                >+5
-                </button>
+                    audioPlayer.currentTime += 5
+                  }}
+                >
+                  +5
+                </ControlsButton>
               </div>
 
               <div className={classes.controlsRow}>
-                <button
-                  className={classes.controlsButton}
+                <ControlsButton
                   onClick={() => audioPlayer.currentTime = closestLeftBookmark}
                 >
                   <SvgIcon name={'left'}/>
-                </button>
+                </ControlsButton>
 
-                <button
-                  className={classes.controlsButton}
+                <ControlsButton
                   disabled={lastBookmark === null}
                   onClick={() => {
                     if (lastBookmark !== null) {
@@ -145,10 +142,9 @@ export const SongShowView = () => {
                 >
                   <SvgIcon name="bookmark"/>
                   +
-                </button>
+                </ControlsButton>
 
-                <button
-                  className={classes.controlsButton}
+                <ControlsButton
                   disabled={closestLeftSavedBookmark === -1}
                   onClick={() => {
                     setSavedBookmarks(prev => prev.filter(bookmark => bookmark !== closestLeftSavedBookmark))
@@ -156,16 +152,14 @@ export const SongShowView = () => {
                 >
                   <SvgIcon name="bookmark"/>
                   -
-                </button>
+                </ControlsButton>
 
-                <button
-                  className={classes.controlsButton}
+                <ControlsButton
                   onClick={() => audioPlayer.currentTime = closestRightBookmark}
                   disabled={closestRightBookmark === -1}
                 >
                   <SvgIcon name={'right'}/>
-                </button>
-
+                </ControlsButton>
               </div>
             </div>
           </div>
@@ -177,58 +171,14 @@ export const SongShowView = () => {
   )
 }
 
-const Bookmark = ({timestamp, duration, inputRef, color}: {
-  timestamp: number,
-  duration: number,
-  inputRef: RefObject<HTMLInputElement>,
-  color?: string
-}) => {
-  const width = (inputRef.current?.getBoundingClientRect().width || 100) - 15
-  const offset = 8
-  const left = (timestamp / duration || 0) * width + offset
 
+const ControlsButton = ({children, ...rest}: ButtonHTMLAttributes<HTMLButtonElement>) => {
   return (
-    <div
-      style={{
-        left,
-        position: 'absolute',
-        width: '2px',
-        height: '10px',
-        backgroundColor: color,
-      }}
-    />
+    <button
+      className={classes.controlsButton}
+      {...rest}
+    >
+      {children}
+    </button>
   )
 }
-
-const useRerender = () => {
-  const [, setState] = useState(0)
-  return () => setState(prev => prev + 1)
-}
-
-const useDbFetchSong = (id: string, {onSuccess}: { onSuccess?: (song: DbSong) => void }) => {
-  const [song, setSong] = useState<DbSong>()
-
-  useEffect(() => {
-    const transaction = db.transaction(audioStoreKey, 'readonly')
-    const store = transaction.objectStore(audioStoreKey)
-    const request = store.get(Number(id))
-
-    request.onsuccess = () => {
-      const song = request.result
-      if (song) {
-        setSong(song)
-        onSuccess?.(song)
-      } else {
-        console.error('Song not found')
-      }
-    }
-
-    request.onerror = () => {
-      console.error('Error fetching song by ID')
-    }
-  }, [id])
-
-  return song
-}
-
-const secondsToTimeString = (seconds: number) => `${Math.floor(seconds / 60)}:${Math.floor(seconds % 60).toString().padStart(2, '0')}`

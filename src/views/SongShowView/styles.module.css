@@ -56,10 +56,15 @@
   width: 50px;
   height: 50px;
   padding: 0;
+  border: 1px solid transparent;
+}
+
+.controlsButton:active {
+  border: 1px solid var(--color-primary-3) !important;
 }
 
 .controlsButton:hover {
-  border: inherit;
+  border: 1px solid transparent;
 }
 
 .controlsButton:focus,
