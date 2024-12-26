@@ -10,6 +10,7 @@
   --background: #242424;
   --background-2: #323232;
   --background-hover: #505050;
+  --surface: #1a1a1a;
   color: var(--color-primary);
   background-color: var(--background);
 
@@ -59,7 +60,7 @@ label.file-upload {
   font-size: 1em;
   font-weight: 500;
   font-family: inherit;
-  background-color: #1a1a1a;
+  background-color: var(--surface);
   cursor: pointer;
   transition: border-color 0.25s;
 }
@@ -101,15 +102,16 @@ button:focus-visible {
 @media (prefers-color-scheme: light) {
   :root {
     --color-primary: #213547;
+    --color-primary-2: rgba(40, 63, 87, 0.87);
+    --color-primary-3: rgba(127, 127, 127, 0.87);
     --background: #ffffff;
+    --background-2: #eeeeee;
+    --background-hover: #cccccc;
+    --surface: #f4f4f9;
   }
 
   a:hover {
     color: #747bff;
-  }
-
-  button {
-    background-color: #f9f9f9;
   }
 }
 
