@@ -1,11 +1,13 @@
-import { ChangeEvent, HTMLProps, ReactNode, useState } from 'react'
+import { ChangeEvent, useState } from 'react'
 import { audioStoreKey, DbSong } from '../../db'
-import { Link, useNavigate } from 'react-router'
+import { useNavigate } from 'react-router'
 import { navigationPaths } from '../../navigationPaths'
 import { dbDelete, dbStore, useDbList } from './utils'
-import { SvgIconButton } from '../../components/SvgIcon'
 import { TextInput } from '../../components/forms/TextInput.tsx'
-import { joinClasses } from '../../utils.ts'
+import classes from './styles.module.css'
+import { FileInput } from './FileInput.tsx'
+import { ListItem } from './ListItem.tsx'
+import { SongItem } from './SongItem.tsx'
 
 export const SongListView = () => {
   const songs = useDbList(audioStoreKey)
@@ -51,24 +53,10 @@ export const SongListView = () => {
   }
 
   return (
-    <div style={{
-      height: '100dvh',
-      width: 'auto',
-      display: 'flex',
-      alignContent: 'start',
-      flexWrap: 'wrap',
-      gap: '24px',
-    }}>
-      <div
-        style={{
-          minWidth: '300px',
-          maxWidth: '420px',
-          width: '100%',
-          flex: 1,
-        }}
-      >
-        <h2 style={{textAlign: 'left', marginTop: 0}}>Your songs</h2>
-        <ul style={{padding: 0}}>
+    <div className={classes.container}>
+      <div className={classes.listContainer}>
+        <h2 className={classes.listHeader}>Your songs</h2>
+        <ul className={classes.listUl}>
           {songs.data?.map((song) => (
             <SongItem
               key={song.id}
@@ -80,36 +68,24 @@ export const SongListView = () => {
         </ul>
       </div>
 
-      <div
-        style={{
-          border: '1px solid var(--color-primary-3)',
-          borderRadius: '8px',
-          boxSizing: 'border-box',
-          minWidth: '200px',
-          maxWidth: '380px',
-          width: '100%',
-          padding: '24px',
-          display: 'flex',
-          flexDirection: 'column',
-          alignItems: 'start',
-          gap: '12px',
-        }}
-      >
-        <div style={{display: 'flex', alignItems: 'end', gap: '12px'}}>
-          <label htmlFor="file-upload" className="file-upload" style={{textWrap: 'nowrap'}}>
-            Choose file
-          </label>
-          <input id="file-upload" type="file" accept="audio/mp3" onChange={onFileChange}/>
+      <div className={classes.uploadContainer}>
+        <div className={classes.uploadInputs}>
+          <FileInput
+            name={'file'}
+            onChange={onFileChange}
+            accept={'audio/mp3'}
+          />
 
           <TextInput
             name={'fileName'}
             value={fileName}
             setValue={setFileName}
             label={'File name'}
+            fullWidth
           />
         </div>
 
-        <div style={{width: '100%', display: 'flex', justifyContent: 'right'}}>
+        <div className={classes.uploadSubmitButton}>
           <input
             type="submit"
             value="Upload"
@@ -122,47 +98,3 @@ export const SongListView = () => {
   )
 }
 
-const ListItem = ({children, clickable, ...rest}: {
-  children: ReactNode,
-  clickable?: boolean
-} & HTMLProps<HTMLLIElement>) => (
-  <li className={joinClasses('list-item', clickable && 'list-item--clickable')} {...rest}>
-    {children}
-  </li>
-)
-
-const SongItem = ({song, onDelete}: { song: DbSong, onDelete: () => void }) => {
-  return (
-    <ListItem
-      style={{
-        display: 'flex',
-        alignItems: 'center',
-        justifyContent: 'space-between',
-        padding: 0,
-      }}
-      clickable
-    >
-      <Link
-        className="link--disabled"
-        to={navigationPaths.songs.single(song.id)}
-        style={{
-          flex: 1,
-          textAlign: 'left',
-          padding: '12px',
-        }}
-      >
-        {song.name}
-      </Link>
-
-      <SvgIconButton
-        size={20}
-        name={'delete'}
-        cursor="pointer"
-        onClick={() => onDelete()}
-        style={{
-          marginRight: '12px',
-        }}
-      />
-    </ListItem>
-  )
-}

@@ -3,6 +3,7 @@ import { ReactEventHandler, RefObject, useEffect, useRef, useState } from 'react
 import { audioStoreKey, db, DbSong } from '../../db'
 import { SvgIcon } from '../../components/SvgIcon'
 import { findClosest } from './utils'
+import classes from './styles.module.css'
 
 export const SongShowView = () => {
   const {id} = useParams<{ id: string }>()
@@ -20,7 +21,6 @@ export const SongShowView = () => {
 
   const closestLeftBookmark = findClosest(allBookmarks, currentTime - 0.5, '<')
   const closestRightBookmark = findClosest(allBookmarks, currentTime, '>')
-  console.log(closestRightBookmark, allBookmarks)
 
   const song = useDbFetchSong(id!, {
     onSuccess: (song) => {
@@ -43,117 +43,133 @@ export const SongShowView = () => {
       <audio ref={audioRef} onTimeUpdate={onAudioUpdate} onCanPlay={refreshState}/>
 
       {(song && audioPlayer) ? (
-        <>
-          <div style={{display: 'flex', gap: '4px', width: '100%', justifyContent: 'center'}}>
-            <span style={{width: '50px'}}>{secondsToTimeString(audioPlayer.currentTime)}</span>
+        <div className={classes.container}>
+          <h1 className={classes.header}>{song.name}</h1>
 
-            <div style={{position: 'relative', display: 'flex', alignItems: 'center', flex: 1}}>
-              <input
-                ref={inputRef}
-                style={{width: '100%'}}
-                step={0.1}
-                type="range"
-                value={(audioPlayer.currentTime * 100 / audioPlayer.duration) || 0}
-                onChange={(e) => {
-                  const newPercentage = Number(e.target.value)
-                  const newTime = newPercentage / 100 * audioPlayer.duration
-                  setLastBookmark(newTime)
-                  audioPlayer.currentTime = newTime
-                }}
-              />
+          <div className={classes.belowHeader}>
+            <div className={classes.progressContainer}>
+            <span className={classes.progressTime}>
+              {secondsToTimeString(audioPlayer.currentTime)}
+            </span>
 
-              {lastBookmark && (
-                <Bookmark
-                  inputRef={inputRef}
-                  timestamp={lastBookmark}
-                  duration={audioPlayer.duration}
-                  color={'red'}
+              <div className={classes.progressInput}>
+                <input
+                  ref={inputRef}
+                  style={{width: '100%'}}
+                  step={0.1}
+                  type="range"
+                  value={(audioPlayer.currentTime * 100 / audioPlayer.duration) || 0}
+                  onChange={(e) => {
+                    const newPercentage = Number(e.target.value)
+                    const newTime = newPercentage / 100 * audioPlayer.duration
+                    setLastBookmark(newTime)
+                    audioPlayer.currentTime = newTime
+                  }}
                 />
-              )}
 
-              {
-                savedBookmarks.map((bookmark, index) => (
+                {lastBookmark && (
                   <Bookmark
                     inputRef={inputRef}
-                    key={index}
-                    timestamp={bookmark}
+                    timestamp={lastBookmark}
                     duration={audioPlayer.duration}
-                    color={'yellow'}
+                    color={'red'}
                   />
-                ))
-              }
-            </div>
+                )}
 
-            <span style={{width: '50px'}}>{secondsToTimeString(audioPlayer.duration)}</span>
+                {
+                  savedBookmarks.map((bookmark, index) => (
+                    <Bookmark
+                      inputRef={inputRef}
+                      key={index}
+                      timestamp={bookmark}
+                      duration={audioPlayer.duration}
+                      color={'yellow'}
+                    />
+                  ))
+                }
+              </div>
+
+              <span className={classes.progressTime}>
+              {secondsToTimeString(audioPlayer.duration)}
+            </span>
+            </div>
+            <div className={classes.controlsContainer}>
+              <div className={classes.controlsRow}>
+                <button
+                  className={classes.controlsButton}
+                  onClick={() => {
+                  audioPlayer.currentTime -= 5
+                }}
+                >
+                  -5
+                </button>
+                <button
+                  className={classes.controlsButton}
+                  onClick={() => {
+                    if (audioPlayer.paused) {
+                      audioPlayer.play()
+                    } else {
+                      audioPlayer.pause()
+                    }
+                    refreshState()
+                  }}
+                >
+                  <SvgIcon name={audioPlayer.paused ? 'play' : 'pause'} size={20}/>
+                </button>
+                <button
+                  className={classes.controlsButton}
+                  onClick={() => {
+                  audioPlayer.currentTime += 5
+                }}
+                >+5
+                </button>
+              </div>
+
+              <div className={classes.controlsRow}>
+                <button
+                  className={classes.controlsButton}
+                  onClick={() => audioPlayer.currentTime = closestLeftBookmark}
+                >
+                  <SvgIcon name={'left'}/>
+                </button>
+
+                <button
+                  className={classes.controlsButton}
+                  disabled={lastBookmark === null}
+                  onClick={() => {
+                    if (lastBookmark !== null) {
+                      setSavedBookmarks(prev => prev.concat(lastBookmark))
+                      setLastBookmark(null)
+                    }
+                  }}
+                >
+                  <SvgIcon name="bookmark"/>
+                  +
+                </button>
+
+                <button
+                  className={classes.controlsButton}
+                  disabled={closestLeftSavedBookmark === -1}
+                  onClick={() => {
+                    setSavedBookmarks(prev => prev.filter(bookmark => bookmark !== closestLeftSavedBookmark))
+                  }}
+                >
+                  <SvgIcon name="bookmark"/>
+                  -
+                </button>
+
+                <button
+                  className={classes.controlsButton}
+                  onClick={() => audioPlayer.currentTime = closestRightBookmark}
+                  disabled={closestRightBookmark === -1}
+                >
+                  <SvgIcon name={'right'}/>
+                </button>
+
+              </div>
+            </div>
           </div>
-
-          <div style={{flexDirection: 'column', margin: '0 auto', width: 'fit-content'}}>
-            <div style={{display: 'flex', gap: '4px', justifyContent: 'center', marginTop: '16px'}}>
-              <button onClick={() => {
-                audioPlayer.currentTime -= 5
-              }}>-5
-              </button>
-              <button
-                style={{display: 'flex'}}
-                onClick={() => {
-                  if (audioPlayer.paused) {
-                    audioPlayer.play()
-                  } else {
-                    audioPlayer.pause()
-                  }
-                  refreshState()
-                }}
-              >
-                <SvgIcon name={audioPlayer.paused ? 'play' : 'pause'} size={20}/>
-              </button>
-              <button onClick={() => {
-                audioPlayer.currentTime += 5
-              }}>+5
-              </button>
-            </div>
-
-            <div style={{display: 'flex'}}>
-              <button
-                onClick={() => audioPlayer.currentTime = closestLeftBookmark}
-              >
-                <SvgIcon name={'left'}/>
-              </button>
-
-              <button
-                style={{display: 'flex', alignItems: 'center'}}
-                disabled={lastBookmark === null}
-                onClick={() => {
-                  if (lastBookmark !== null) {
-                    setSavedBookmarks(prev => prev.concat(lastBookmark))
-                    setLastBookmark(null)
-                  }
-                }}
-              >
-                <SvgIcon name="bookmark"/>
-                +
-              </button>
-
-              <button
-                style={{display: 'flex', alignItems: 'center'}}
-                disabled={closestLeftSavedBookmark === -1}
-                onClick={() => {
-                  setSavedBookmarks(prev => prev.filter(bookmark => bookmark !== closestLeftSavedBookmark))
-                }}
-              >
-                <SvgIcon name="bookmark"/>
-                -
-              </button>
-
-              <button
-                onClick={() => audioPlayer.currentTime = closestRightBookmark}
-                disabled={closestRightBookmark === -1}
-              >
-                <SvgIcon name={'right'}/>
-              </button>
-
-            </div>
-          </div>
-        </>
+        </div>
       ) : (
         'Loading...'
       )}
@@ -181,7 +197,6 @@ const Bookmark = ({timestamp, duration, inputRef, color}: {
         backgroundColor: color,
       }}
     />
-
   )
 }
 
@@ -191,7 +206,7 @@ const useRerender = () => {
 }
 
 const useDbFetchSong = (id: string, {onSuccess}: { onSuccess?: (song: DbSong) => void }) => {
-  const [song, setSong] = useState()
+  const [song, setSong] = useState<DbSong>()
 
   useEffect(() => {
     const transaction = db.transaction(audioStoreKey, 'readonly')
@@ -211,7 +226,7 @@ const useDbFetchSong = (id: string, {onSuccess}: { onSuccess?: (song: DbSong) =>
     request.onerror = () => {
       console.error('Error fetching song by ID')
     }
-  }, [])
+  }, [id])
 
   return song
 }
