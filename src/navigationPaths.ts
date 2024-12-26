@@ -1,4 +1,4 @@
-const BASE = '/dance-player'
+const BASE = import.meta.env.BASE_URL as string
 
 export const navigationPaths = {
   songs: {

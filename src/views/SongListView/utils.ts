@@ -32,7 +32,6 @@ export const dbDelete = (id: IDBValidKey, {onSuccess}: { onSuccess?: () => void 
 
   const transaction = db.transaction(audioStoreKey, 'readwrite')
   const store = transaction.objectStore(audioStoreKey)
-
   const request = store.delete(id)
 
   request.onsuccess = () => {
