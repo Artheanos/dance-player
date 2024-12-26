@@ -1,7 +1,9 @@
+const BASE = '/dance-player'
+
 export const navigationPaths = {
   songs: {
-    root: '/',
-    single: (id: Stringable) => `/songs/${id}`,
+    root: `${BASE}`,
+    single: (id: Stringable) => `${BASE}/songs/${id}`,
   },
 }
 
