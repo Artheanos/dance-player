@@ -1,4 +1,4 @@
-import { SVGProps } from 'react'
+import { ButtonHTMLAttributes, SVGProps } from 'react'
 
 import { PauseIcon } from '../assets/icons/PauseIcon'
 import { PlayIcon } from '../assets/icons/PlayIcon'
@@ -7,6 +7,9 @@ import { ArrowLeftIcon } from '../assets/icons/ArrowLeftIcon'
 import { ArrowRightIcon } from '../assets/icons/ArrowRightIcon'
 import { TrashIcon } from '../assets/icons/TrashIcon'
 import { UploadIcon } from '../assets/icons/UploadIcon.tsx'
+import { PencilIcon } from '../assets/icons/PencilIcon.tsx'
+import { LocationArrowIcon } from '../assets/icons/LocationArrowIcon.tsx'
+import { joinClasses } from '../utils.ts'
 
 type Props = {
   name: keyof typeof icons
@@ -19,11 +22,20 @@ export const SvgIcon = ({size = 16, name, ...rest}: Props) => {
   return <Icon width={size} height={size} {...rest}/>
 }
 
-export const SvgIconButton = ({size = 16, name, style, ...rest}: Props) => {
+type SvgIconButtonProps = Props & {
+  active?: boolean
+  onClick: ButtonHTMLAttributes<HTMLButtonElement>['onClick']
+}
+
+export const SvgIconButton = ({size = 16, name, style, active, onClick, ...rest}: SvgIconButtonProps) => {
   return (
-    <div className="svg-icon-button" style={style}>
+    <button
+      className={joinClasses('svg-icon-button', active && 'svg-icon-button--active')}
+      style={style}
+      onClick={onClick}
+    >
       <SvgIcon size={size} name={name} {...rest}/>
-    </div>
+    </button>
   )
 }
 
@@ -35,4 +47,6 @@ const icons = {
   right: ArrowRightIcon,
   delete: TrashIcon,
   upload: UploadIcon,
+  pencil: PencilIcon,
+  locationArrow: LocationArrowIcon,
 }

@@ -30,6 +30,12 @@
   padding: 0;
 }
 
+.listLi a {
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  overflow: hidden;
+}
+
 .uploadContainer {
   border: 1px solid var(--color-primary-3);
   border-radius: 8px;

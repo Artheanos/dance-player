@@ -87,7 +87,7 @@ export const SongListView = () => {
         <div className={classes.uploadSubmitButton}>
           <input
             type="submit"
-            value="Upload"
+            value="Create"
             onClick={onSubmit}
             disabled={!file || !file.name}
           />

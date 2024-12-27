@@ -1,5 +1,5 @@
 import { ButtonHTMLAttributes } from 'react'
-import classes from './styles.module.css'
+import classes from '../styles.module.css'
 
 export const ControlsButton = ({children, ...rest}: ButtonHTMLAttributes<HTMLButtonElement>) => {
   return (

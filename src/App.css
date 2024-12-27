@@ -74,11 +74,26 @@
 
 .svg-icon-button {
   display: flex;
-  padding: 4px;
-  margin: -4px;
+  padding: 6px;
+  margin: -6px;
   border-radius: 50px;
+  cursor: pointer;
+  border: none;
+  background-color: inherit;
+}
+
+.svg-icon-button:focus {
+  outline: none;
 }
 
 .svg-icon-button:hover {
-  background-color: var(--background-hover);
+  background-color: var(--surface);
+}
+
+.svg-icon-button:active {
+  background-color: var(--background-3);
+}
+
+.svg-icon-button--active {
+  background-color: var(--background-2);
 }

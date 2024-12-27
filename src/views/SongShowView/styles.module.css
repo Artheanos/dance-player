@@ -2,10 +2,41 @@
   height: 100%;
   display: flex;
   flex-direction: column;
+  --last-bookmark-color: red;
+  --saved-bookmark-color: yellow;
+}
+
+@media (prefers-color-scheme: light) {
+  .container {
+    --last-bookmark-color: red;
+    --saved-bookmark-color: #ffaa38;
+  }
+}
+
+.headerContainer form {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+}
+
+.headerContainer div {
+  width: 100%;
+}
+
+.headerControls {
+  width: 100%;
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 16px;
 }
 
 .header {
   margin: 0;
+  overflow: hidden;
+  font-size: 1.3em;
+  white-space: nowrap;
+  text-overflow: ellipsis;
 }
 
 .belowHeader {
@@ -34,13 +65,32 @@
   flex: 1;
 }
 
+.progressBookmark {
+  position: absolute;
+  rotate: 180deg;
+  transform: translate(50%, 50%);
+}
+
+.progressBookmarkActive {
+  width: 24px;
+  height: 24px;
+}
+
+.progressBookmarkLast {
+  color: var(--last-bookmark-color);
+  fill: var(--last-bookmark-color);
+}
+
+.progressBookmarkSaved {
+  color: var(--saved-bookmark-color);
+  fill: var(--saved-bookmark-color);
+}
+
 .controlsContainer {
   margin-top: 16px;
   display: flex;
   flex-direction: column;
   gap: 4px;
-  /*margin: 0 auto;*/
-  /*width: fit-content;*/
 }
 
 .controlsRow {
