@@ -24,6 +24,12 @@ const getSvgPathHtml = (path) => {
 const createIconComponent = (iconName, pathContent) => {
   const iconComponentName = `${capitalize(iconName)}Icon`
 
+  pathContent = pathContent.replaceAll(/(\w+)-(\w*)/g, (...args) => (
+    `${args[1]}${capitalize(args[2])}`
+  ))
+  pathContent = pathContent.replaceAll(/(stroke=").*?(")/g, (...args) => (
+    `${args[1]}currentColor${args[2]}`
+  ))
   const contents = `import { SVGProps } from 'react'
 
 export const ${iconComponentName} = ({...props}: SVGProps<SVGSVGElement>) => (
