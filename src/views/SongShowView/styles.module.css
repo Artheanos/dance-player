@@ -148,9 +148,17 @@
   outline: inherit;
 }
 
-
 @media only screen and (max-width: 768px) {
   .progressBar {
     height: 50px;
+  }
+  .controlsButton {
+    width: 80px;
+    height: 80px;
+    font-size: 30px;
+  }
+  .controlsButton svg {
+    width: 30px;
+    height: 30px;
   }
 }
