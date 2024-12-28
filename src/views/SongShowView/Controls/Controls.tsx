@@ -9,75 +9,111 @@ type Props = {
   refreshState: () => void
 }
 
-export const Controls = ({audioPlayer, bookmarks, refreshState}: Props) => {
+export const Controls = (props: Props) => {
   return (
     <div className={classes.controlsContainer}>
       <div className={classes.controlsRow}>
-        <ControlsButton
-          onClick={() => {
-            audioPlayer.currentTime -= 5
-          }}
-        >
-          -5
-        </ControlsButton>
-        <ControlsButton
-          onClick={() => {
-            if (audioPlayer.paused) {
-              audioPlayer.play()
-            } else {
-              audioPlayer.pause()
-            }
-            refreshState()
-          }}
-        >
-          <SvgIcon name={audioPlayer.paused ? 'play' : 'pause'} size={20}/>
-        </ControlsButton>
-        <ControlsButton
-          onClick={() => {
-            audioPlayer.currentTime += 5
-          }}
-        >
-          +5
-        </ControlsButton>
+        <ButtonLeft {...props} />
+
+        <ButtonPlayerPause {...props} />
+
+        <ButtonRight {...props} />
       </div>
 
       <div className={classes.controlsRow}>
-        <ControlsButton
-          onClick={() => audioPlayer.currentTime = bookmarks.closestLeft}
-        >
-          <SvgIcon name={'left'}/>
-        </ControlsButton>
+        <ButtonSkipLeft {...props} />
 
-        <ControlsButton
-          disabled={bookmarks.last === null}
-          onClick={() => {
-            if (bookmarks.last !== null) {
-              bookmarks.addSaved(bookmarks.last)
-              bookmarks.setLast(null)
-            }
-          }}
-        >
-          <SvgIcon name="bookmark"/>
-          +
-        </ControlsButton>
+        <ButtonRemoveBookmark {...props}/>
 
-        <ControlsButton
-          disabled={bookmarks.closestLeftSaved === -1}
-          onClick={() => {
-            bookmarks.removeSaved(bookmarks.closestLeftSaved)
-          }}
-        >
-          <SvgIcon name="bookmark"/>
-          -
-        </ControlsButton>
+        <ButtonAddBookmark {...props}/>
 
-        <ControlsButton
-          onClick={() => audioPlayer.currentTime = bookmarks.closestRight}
-          disabled={bookmarks.closestRight === -1}
-        >
-          <SvgIcon name={'right'}/>
-        </ControlsButton>
+        <ButtonSkipRight {...props} />
       </div>
     </div>
   )
 }
+
+const ButtonLeft = ({audioPlayer, bookmarks}: Props) => {
+  return (
+    <ControlsButton
+      onClick={() => audioPlayer.currentTime = bookmarks.closestLeft}
+    >
+      <SvgIcon name={'left'}/>
+    </ControlsButton>
+  )
+}
+
+const ButtonPlayerPause = ({audioPlayer, refreshState}: Props) => {
+  return (
+    <ControlsButton
+      onClick={() => {
+        if (audioPlayer.paused) {
+          audioPlayer.play()
+        } else {
+          audioPlayer.pause()
+        }
+        refreshState()
+      }}
+    >
+      <SvgIcon name={audioPlayer.paused ? 'play' : 'pause'} size={20}/>
+    </ControlsButton>
+  )
+}
+
+const ButtonRight = ({audioPlayer, bookmarks}: Props) => {
+  return (
+    <ControlsButton
+      onClick={() => audioPlayer.currentTime = bookmarks.closestRight}
+      disabled={bookmarks.closestRight === -1}
+    >
+      <SvgIcon name={'right'}/>
+    </ControlsButton>
+  )
+}
+
+const ButtonSkipLeft = ({audioPlayer}: Props) => (
+  <ControlsButton
+    onClick={() => {
+      audioPlayer.currentTime -= 5
+    }}
+  >
+    -5
+  </ControlsButton>
+)
+
+const ButtonSkipRight = ({audioPlayer}: Props) => (
+  <ControlsButton
+    onClick={() => {
+      audioPlayer.currentTime += 5
+    }}
+  >
+    +5
+  </ControlsButton>
+)
+
+const ButtonRemoveBookmark = ({bookmarks}: Props) => (
+  <ControlsButton
+    disabled={bookmarks.closestLeftSaved === -1}
+    onClick={() => {
+      bookmarks.removeSaved(bookmarks.closestLeftSaved)
+    }}
+  >
+    <SvgIcon name="bookmark"/>
+    -
+  </ControlsButton>
+)
+
+const ButtonAddBookmark = ({bookmarks}: Props) => (
+  <ControlsButton
+    disabled={bookmarks.last === null}
+    onClick={() => {
+      if (bookmarks.last !== null) {
+        bookmarks.addSaved(bookmarks.last)
+        bookmarks.setLast(null)
+      }
+    }}
+  >
+    <SvgIcon name="bookmark"/>
+    +
+  </ControlsButton>
+)
