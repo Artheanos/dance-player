@@ -20,13 +20,15 @@ export const Bar = ({value, setValue, inputRef}: Props) => {
   }
 
   const onTouchStart = (e: DivInteractEvent) => {
-    e.preventDefault()
+    if (!isTouchEvent(e)) {
+      e.preventDefault()
+    }
     setMouseIsDown(true)
     setValueFromEvent(e)
   }
 
   useEffect(() => {
-    const onMouseMove = (e: DOMMouseEvent) => {
+    const onMouseMove = (e: DivInteractEvent) => {
       e.preventDefault()
       if (mouseIsDown) {
         setValueFromEvent(e)
@@ -39,14 +41,22 @@ export const Bar = ({value, setValue, inputRef}: Props) => {
 
     document.addEventListener('mouseup', onMouseUp)
     document.addEventListener('mousemove', onMouseMove)
+    document.addEventListener('touchmove', onMouseMove)
+    document.addEventListener('touchend', onMouseUp)
 
     return () => {
       document.removeEventListener('mouseup', onMouseUp)
       document.removeEventListener('mousemove', onMouseMove)
+      document.removeEventListener('touchmove', onMouseMove)
+      document.removeEventListener('touchend', onMouseUp)
     }
 
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [inputRef, mouseIsDown, setMouseIsDown])
+
+  // useEffect(() => {
+  //   inputRef.current!.addEventListener('contextmenu', (e) => e.preventDefault())
+  // }, [])
 
   return (
     <div
@@ -76,9 +86,12 @@ const getDistanceFromLeft = (element: HTMLDivElement, event: DivInteractEvent): 
   }
 }
 
-const isTouchEvent = (e: DivInteractEvent): e is DivTouchEvent => e.type.startsWith('touch')
+const isTouchEvent = (e: DivInteractEvent): e is AnyTouchEvent => e.type.startsWith('touch')
 
-type DivInteractEvent = DivMouseEvent | DivTouchEvent | DOMMouseEvent
+type DivInteractEvent = DivMouseEvent | DivTouchEvent | DOMMouseEvent | DOMTouchEvent
+type AnyTouchEvent = DivTouchEvent | DOMTouchEvent
+
 type DivTouchEvent = TouchEvent<HTMLDivElement>
 type DivMouseEvent = MouseEvent<HTMLDivElement>
 type DOMMouseEvent = globalThis.MouseEvent
+type DOMTouchEvent = globalThis.TouchEvent

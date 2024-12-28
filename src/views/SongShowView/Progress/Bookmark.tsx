@@ -11,8 +11,8 @@ export const Bookmark = ({timestamp, duration, inputRef, active, type}: {
   active?: boolean
   type: 'saved' | 'last'
 }) => {
-  const width = (inputRef.current?.getBoundingClientRect().width || 100) - 15
-  const offset = 10
+  const width = (inputRef.current?.getBoundingClientRect().width || 100)
+  const offset = 0
   const left = (timestamp / duration || 0) * width + offset
 
   const className = joinClasses(
