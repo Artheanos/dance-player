@@ -10,9 +10,6 @@ export const SongShowView = () => {
   const {id} = useParams<{ id: string }>()
   const audioRef = useRef<HTMLMediaElement>(null)
   const audioPlayer = audioRef.current!
-
-  const bookmarks = useBookmarks(audioPlayer?.currentTime)
-
   const refreshState = useRerender()
 
   const song = useDbFetchSong(id!, {
@@ -24,6 +21,8 @@ export const SongShowView = () => {
       refreshState()
     },
   })
+
+  const bookmarks = useBookmarks(song.data, song.set, audioPlayer?.currentTime)
 
   const onAudioUpdate: ReactEventHandler<HTMLAudioElement> = (event) => {
     if (!event.currentTarget.duration) return

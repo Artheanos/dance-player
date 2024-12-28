@@ -36,5 +36,6 @@ export const useInitDb = (): boolean => {
 export type DbSong = {
   id: number,
   name: string,
+  bookmarks: number[]
   blob: File
 }

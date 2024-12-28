@@ -1,9 +1,13 @@
 import { useEffect, useState } from 'react'
 import { audioStoreKey, db, DbSong } from '../../db.ts'
-import { fatalError } from '../../utils.ts'
+import { fatalError, StateSetter } from '../../utils.ts'
 
-export const useBookmarks = (currentTime: number = 0) => {
-  const [saved, setSaved] = useState<number[]>([])
+export const useBookmarks = (
+  song: DbSong | undefined,
+  setSong: StateSetter<DbSong | undefined>,
+  currentTime: number = 0,
+) => {
+  const saved = song?.bookmarks || []
   const [last, setLast] = useState<number | null>(null)
   const all = last ? saved.concat(last) : saved
 
@@ -11,8 +15,24 @@ export const useBookmarks = (currentTime: number = 0) => {
   const closestRight = findClosest(all, currentTime, '>')
   const closestLeftSaved = findClosest(saved, currentTime + 0.5, '<')
 
-  const addSaved = (bookmark: number) => setSaved(prev => prev.concat(bookmark))
-  const removeSaved = (bookmark: number) => setSaved(prev => prev.filter(i => i !== bookmark))
+  const setSaved = (newArray: number[]) => {
+    if (!song) return
+
+    const newSong = {...song, bookmarks: newArray}
+    dbUpdateSong(newSong, {
+      onSuccess: () => {
+        setSong(newSong)
+      },
+    })
+  }
+
+  const addSaved = (bookmark: number) => {
+    setSaved(saved.concat(bookmark))
+  }
+
+  const removeSaved = (bookmark: number) => {
+    setSaved(saved.filter(i => i !== bookmark))
+  }
 
   return {
     last,

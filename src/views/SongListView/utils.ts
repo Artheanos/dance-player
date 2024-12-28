@@ -14,7 +14,7 @@ export const dbStore = ({name, file, onSuccess}: {
   const transaction = db.transaction(audioStoreKey, 'readwrite')
   const store = transaction.objectStore(audioStoreKey)
   const fileBlob = new Blob([file], {type: file.type})
-  const request = store.add({name, blob: fileBlob})
+  const request = store.add({name, blob: fileBlob, bookmarks: []})
 
   request.onsuccess = () => {
     onSuccess(request.result)
