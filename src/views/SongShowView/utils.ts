@@ -9,7 +9,7 @@ export const useBookmarks = (currentTime: number = 0) => {
 
   const closestLeft = findClosest(all, currentTime - 0.5, '<')
   const closestRight = findClosest(all, currentTime, '>')
-  const closestLeftSaved = findClosest(saved, currentTime - 0.5, '<')
+  const closestLeftSaved = findClosest(saved, currentTime + 0.5, '<')
 
   const addSaved = (bookmark: number) => setSaved(prev => prev.concat(bookmark))
   const removeSaved = (bookmark: number) => setSaved(prev => prev.filter(i => i !== bookmark))

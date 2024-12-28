@@ -35,6 +35,7 @@ export const Progress = ({audioPlayer, bookmarks}: Props) => {
             timestamp={bookmarks.last}
             duration={audioPlayer.duration}
             type="last"
+            onClick={() => {audioPlayer.currentTime = bookmarks.last!}}
           />
         )}
 
@@ -47,6 +48,7 @@ export const Progress = ({audioPlayer, bookmarks}: Props) => {
               timestamp={bookmark}
               duration={audioPlayer.duration}
               type="saved"
+              onClick={() => {audioPlayer.currentTime = bookmark}}
             />
           ))
         }

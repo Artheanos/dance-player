@@ -3,12 +3,13 @@ import { joinClasses } from '../../../utils.ts'
 import classes from '../styles.module.css'
 import { SvgIcon } from '../../../components/SvgIcon.tsx'
 
-export const Bookmark = ({timestamp, duration, inputRef, active, type}: {
+export const Bookmark = ({timestamp, duration, inputRef, active, type, onClick}: {
   timestamp: number
   duration: number
   inputRef: RefObject<HTMLInputElement>
   color?: string
   active?: boolean
+  onClick?: () => void
   type: 'saved' | 'last'
 }) => {
   const width = (inputRef.current?.getBoundingClientRect().width || 100)
@@ -24,8 +25,9 @@ export const Bookmark = ({timestamp, duration, inputRef, active, type}: {
 
   return (
     <SvgIcon
-      name='locationArrow'
+      name="locationArrow"
       className={className}
+      onClick={onClick}
       size={20}
       style={{
         left,
