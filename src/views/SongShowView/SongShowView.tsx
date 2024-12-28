@@ -33,7 +33,7 @@ export const SongShowView = () => {
 
   return (
     <>
-      <audio ref={audioRef} onTimeUpdate={onAudioUpdate} onCanPlay={refreshState}/>
+      <audio ref={audioRef} onTimeUpdate={onAudioUpdate} onCanPlay={refreshState} onLoadedMetadata={refreshState}/>
 
       {(song.data && audioPlayer) ? (
         <div className={classes.container}>
