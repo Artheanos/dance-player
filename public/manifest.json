@@ -1,0 +1,17 @@
+{
+  "lang": "en-us",
+  "name": "Dance Player",
+  "short_name": "Dance Player",
+  "description": "Audio player",
+  "start_url": "/dance-player",
+  "background_color": "#2f3d58",
+  "theme_color": "#2f3d58",
+  "orientation": "any",
+  "display": "standalone",
+  "icons": [
+    {
+      "src": "./favicon.svg",
+      "sizes": "512x512"
+    }
+  ]
+}
