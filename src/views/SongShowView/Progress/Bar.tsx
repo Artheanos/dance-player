@@ -54,10 +54,6 @@ export const Bar = ({value, setValue, inputRef}: Props) => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [inputRef, mouseIsDown, setMouseIsDown])
 
-  // useEffect(() => {
-  //   inputRef.current!.addEventListener('contextmenu', (e) => e.preventDefault())
-  // }, [])
-
   return (
     <div
       className={classes.progressBar}

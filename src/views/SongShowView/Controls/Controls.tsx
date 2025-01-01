@@ -11,8 +11,8 @@ type Props = {
 
 export const Controls = (props: Props) => {
   return (
-    <div className={classes.controlsContainer}>
-      <div className={classes.controlsRow}>
+    <div className={classes.controlsContainer} role="rowgroup">
+      <div className={classes.controlsRow} role="row">
         <ButtonLeft {...props} />
 
         <ButtonPlayerPause {...props} />
@@ -20,7 +20,7 @@ export const Controls = (props: Props) => {
         <ButtonRight {...props} />
       </div>
 
-      <div className={classes.controlsRow}>
+      <div className={classes.controlsRow} role="row">
         <ButtonSkipLeft {...props} />
 
         <ButtonRemoveBookmark {...props}/>
