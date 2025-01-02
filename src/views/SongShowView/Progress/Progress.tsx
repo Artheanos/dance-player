@@ -13,7 +13,7 @@ export const Progress = ({audioPlayer, bookmarks}: Props) => {
   const barInputRef = useRef<HTMLInputElement>(null)
 
   return (
-    <div className={classes.progressContainer}>
+    <div className={classes.progressContainer} role="progressbar">
       <span className={classes.progressTime}>
         {secondsToTimeString(audioPlayer.currentTime)}
       </span>
